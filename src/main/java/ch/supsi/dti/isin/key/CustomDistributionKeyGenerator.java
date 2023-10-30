@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.Iterator;
+import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.zip.ZipInputStream;
@@ -22,17 +23,22 @@ import java.util.zip.ZipInputStream;
  *
  * @author Massimo Coluzzi
  */
-public class CustomDistributionKeyGenerator implements KeyGenerator
-{
+public class CustomDistributionKeyGenerator implements KeyGenerator {
 
-    /** Path to the source file used to load the keys. */
+    /**
+     * Path to the source file used to load the keys.
+     */
     public static final String SOURCE_PATH = "/clustered-distribution.zip";
 
 
-    /** Source of the key distribution. */
+    /**
+     * Source of the key distribution.
+     */
     private URL source;
 
-    /** Keys that will be returned by the generator. */
+    /**
+     * Keys that will be returned by the generator.
+     */
     private final String[] data;
 
 
@@ -41,14 +47,13 @@ public class CustomDistributionKeyGenerator implements KeyGenerator
      *
      * @param url the path of the file to load.
      */
-    public CustomDistributionKeyGenerator( URL url )
-    {
+    public CustomDistributionKeyGenerator(URL url) {
 
         super();
 
-        this.source = Require.nonNull( url, "The dataset file name is mandatory" );
+        this.source = Require.nonNull(url, "The dataset file name is mandatory");
         this.data = loadData();
-        
+
     }
 
 
@@ -59,24 +64,22 @@ public class CustomDistributionKeyGenerator implements KeyGenerator
 
     /**
      * Returns the number of keys loaded from file.
-     * 
+     *
      * @return the original number of keys.
      */
-    public int size()
-    {
+    public int size() {
 
         return data.length;
-        
+
     }
 
     /**
      * {@inheritDoc}
      */
-    public Stream<String> stream()
-    {
+    public Stream<String> stream() {
 
         final Iterator<String> iter = iterator();
-        return Stream.generate( iter::next );
+        return Stream.generate(iter::next);
 
     }
 
@@ -84,11 +87,9 @@ public class CustomDistributionKeyGenerator implements KeyGenerator
      * {@inheritDoc}
      */
     @Override
-    public Iterator<String> iterator()
-    {
+    public Iterator<String> iterator() {
 
-        return new Iterator<>()
-        {
+        return new Iterator<String>() {
 
             /** The index of the current key. */
             private int i = -1;
@@ -99,22 +100,19 @@ public class CustomDistributionKeyGenerator implements KeyGenerator
             /** The prefix to add to each key. */
             private String prefix = "0";
 
-            
+
             @Override
-            public boolean hasNext()
-            {
+            public boolean hasNext() {
                 return true;
             }
 
             @Override
-            public String next()
-            {
+            public String next() {
 
-                if( ++i >= data.length )
-                {
+                if (++i >= data.length) {
                     i = 0;
                     iteration += 1;
-                    prefix = String.valueOf( iteration );
+                    prefix = String.valueOf(iteration);
                 }
 
                 return prefix + data[i];
@@ -133,29 +131,26 @@ public class CustomDistributionKeyGenerator implements KeyGenerator
 
     /**
      * Loads the data from the given source into an array of keys.
-     * 
+     *
      * @return array of keys to use in the generator
      */
-    private String[] loadData()
-    {
+    private String[] loadData() {
 
-        try(
-            final ZipInputStream zis = new ZipInputStream( source.openStream() );
-            final BufferedReader reader = new BufferedReader( new InputStreamReader(zis) );
-        )
-        {
+        try (
+                final ZipInputStream zis = new ZipInputStream(source.openStream());
+                final BufferedReader reader = new BufferedReader(new InputStreamReader(zis));
+        ) {
 
             /* We expect the zip file to have only one entry. */
             zis.getNextEntry();
             return reader.lines()
-                    .limit( Integer.MAX_VALUE )
-                    .collect( Collectors.toList() )
-                    .toArray( String[]::new );
+                    .limit(Integer.MAX_VALUE)
+                    .collect(Collectors.toList())
+                    .toArray(new String[1]);
 
-        }catch( IOException ex )
-        {
+        } catch (IOException ex) {
 
-            throw new RuntimeException( ex );
+            throw new RuntimeException(ex);
 
         }
 
@@ -171,8 +166,7 @@ public class CustomDistributionKeyGenerator implements KeyGenerator
      * {@inheritDoc}
      */
     @Override
-    public boolean equals( Object other )
-    {
+    public boolean equals(Object other) {
 
         return Equals.ifSameClass(
                 this, other,
@@ -185,8 +179,7 @@ public class CustomDistributionKeyGenerator implements KeyGenerator
      * {@inheritDoc}
      */
     @Override
-    public int hashCode()
-    {
+    public int hashCode() {
 
         return Hashcode.of(source);
 
@@ -196,12 +189,11 @@ public class CustomDistributionKeyGenerator implements KeyGenerator
      * {@inheritDoc}
      */
     @Override
-    public String toString()
-    {
+    public String toString() {
 
-        return ToString.of( this )
-                .withCustomClassName( KeyGenerator.class.getSimpleName() )
-                .print( source )
+        return ToString.of(this)
+                .withCustomClassName(KeyGenerator.class.getSimpleName())
+                .print(source)
                 .likeEclipse();
 
     }

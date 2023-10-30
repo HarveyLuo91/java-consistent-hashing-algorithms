@@ -101,7 +101,7 @@ public abstract class ResourceLoader<R>
         return Require.nonNull( keys, "The keys of the resources to load cannot be null" )
                 .stream()
                 .map( this::load )
-                .toList();
+                .collect(Collectors.toList());
 
     }
 

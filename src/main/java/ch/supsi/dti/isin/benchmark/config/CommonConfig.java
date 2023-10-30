@@ -1,6 +1,7 @@
 package ch.supsi.dti.isin.benchmark.config;
 
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -26,8 +27,7 @@ public class CommonConfig extends AbstractConfig<CommonConfig> implements Clonea
     public static final boolean DEFAULT_GC = true;
 
     /** Default value for the {@link #outputFolder} property. */
-    public static final Path DEFAULT_OUTPUT_FOLDER = Path
-        .of( System.getProperty("java.io.tmpdir") )
+    public static final Path DEFAULT_OUTPUT_FOLDER = Paths.get(System.getProperty("java.io.tmpdir"))
         .toAbsolutePath()
         .resolve( "ch-bench" );
 
@@ -37,7 +37,7 @@ public class CommonConfig extends AbstractConfig<CommonConfig> implements Clonea
 
     /** Default value for the {@link #keyDistributions} property. */
     public static final List<Distribution> DEFAULT_DISTRIBUTIONS
-    = Arrays.stream( Distribution.values() ).toList();
+    = Arrays.asList( Distribution.values() );
 
     /** Default value for the {@link #hashFunctions} property. */
     public static final List<String> DEFAULT_FUNCTIONS
@@ -238,7 +238,7 @@ public class CommonConfig extends AbstractConfig<CommonConfig> implements Clonea
                 final String outputFolder = ConfigUtils.toString( path, value );
                 if( IsNot.blank(outputFolder) )
                 {
-                    this.outputFolder = Path.of( outputFolder ).toAbsolutePath();
+                    this.outputFolder = Paths.get( outputFolder ).toAbsolutePath();
                     this.resultsFolder = this.outputFolder.resolve( "results" );
                 }
                 break;

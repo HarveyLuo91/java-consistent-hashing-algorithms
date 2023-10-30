@@ -38,7 +38,7 @@ public class UnknownConstantException extends InvalidConfigException
     public static UnknownConstantException of( ValuePath path, String value, Class<? extends Enum<?>> type )
     {
 
-        final List<?> constants = Arrays.stream( type.getEnumConstants() ).toList();
+        final List<?> constants = Arrays.asList( type.getEnumConstants() );
         return of( path, value, constants );
 
     }

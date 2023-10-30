@@ -4,10 +4,7 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import ch.supsi.dti.isin.benchmark.adapter.ConsistentHashFactory;
 import ch.supsi.dti.isin.benchmark.config.BenchmarkConfig;
@@ -358,10 +355,10 @@ public class Balance extends BenchmarkExecutor
                     .mapToInt( iter ->
                         Arrays.stream( iter )
                             .min()
-                            .orElseThrow()
+                            .orElseThrow(()->new NoSuchElementException("No value present"))
                     )
                     .average()
-                    .orElseThrow();
+                    .orElseThrow(()->new NoSuchElementException("No value present"));
 
         }
 
@@ -392,10 +389,10 @@ public class Balance extends BenchmarkExecutor
                     .mapToInt( iter ->
                         Arrays.stream( iter )
                             .max()
-                            .orElseThrow()
+                            .orElseThrow(()->new NoSuchElementException("no such value"))
                     )
                     .average()
-                    .orElseThrow();
+                    .orElseThrow(()->new NoSuchElementException("no such value"));
 
         }
 

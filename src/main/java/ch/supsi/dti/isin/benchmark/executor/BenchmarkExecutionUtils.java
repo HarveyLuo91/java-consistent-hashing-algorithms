@@ -71,7 +71,7 @@ public class BenchmarkExecutionUtils
     public static String[] getHashFunctionNames( BenchmarkConfig config )
     {
 
-        return config.getCommon().getHashFunctions().toArray( String[]::new );
+        return config.getCommon().getHashFunctions().toArray( new String[1] );
 
     }
 

@@ -9,6 +9,7 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Map;
@@ -97,12 +98,15 @@ public class ConfigLoader
         try( final Writer writer = new StringWriter();
              final BufferedReader br = new BufferedReader(reader); )
         {
-            
-            reader.transferTo( writer );
+            char[] buffer = new char[4096];
+            int bytesRead;
+            while ((bytesRead = br.read(buffer)) != -1) {
+                writer.write(buffer, 0, bytesRead);
+            }
             writer.flush();
-            
+
             final String yaml = writer.toString();
-            return of( yaml );
+            return of(yaml);
                         
         }
 
@@ -154,7 +158,7 @@ public class ConfigLoader
         final Path file = CommonConfig.DEFAULT_OUTPUT_FOLDER.resolve( "config.yaml" );
         logger.fine( "Restore config from default location: " + file );
 
-        final String yaml = Files.readString( file );
+        final String yaml = new String(Files.readAllBytes(file));
         return of( yaml );
 
     }
@@ -229,7 +233,7 @@ public class ConfigLoader
         final Path file = Config.STORE_PATH;
         logger.fine( "Storing config to default location: " + file );
 
-        Files.writeString( file, yaml );
+        Files.write( file, yaml.getBytes() );
 
     }
 

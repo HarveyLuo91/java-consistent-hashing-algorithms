@@ -3,26 +3,27 @@ package ch.supsi.dti.isin.hashfunction;
 import org.apache.commons.codec.digest.XXHash32;
 import org.nerd4j.utils.lang.Require;
 
+import static com.google.common.base.Preconditions.checkArgument;
+
 
 /**
  * {@code XX32} implementation of the {@link HashFunction} interface.
- * 
+ *
  * @author Massimo Coluzzi
  */
-public class XXHash implements HashFunction
-{
+public class XXHash implements HashFunction {
 
-    
-    /** Internal implementation of the {@code XX32} algorithm. */
+
+    /**
+     * Internal implementation of the {@code XX32} algorithm.
+     */
     private XXHash32 xxHash32;
 
 
     /**
      * Default constructor.
-     * 
      */
-    public XXHash()
-    {
+    public XXHash() {
 
         super();
 
@@ -40,8 +41,7 @@ public class XXHash implements HashFunction
      * {@inheritDoc}}
      */
     @Override
-    public String name()
-    {
+    public String name() {
 
         return "XX";
 
@@ -51,16 +51,15 @@ public class XXHash implements HashFunction
      * {@inheritDoc}
      */
     @Override
-    public synchronized long hash( byte[] bytes )
-    {
+    public synchronized long hash(byte[] bytes) {
 
-        Require.nonEmpty( bytes, "The byte array to hash cannot be null or empty" );
-        
+        Require.nonEmpty(bytes, "The byte array to hash cannot be null or empty");
+
         xxHash32.reset();
-        xxHash32.update( bytes );
+        xxHash32.update(bytes, 0, bytes.length);
 
         return xxHash32.getValue();
 
     }
-    
+
 }
